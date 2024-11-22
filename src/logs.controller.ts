@@ -28,6 +28,8 @@ export class LogsController {
   @Post()
   @UseGuards(new ApiGuard())
   async createLog(@Body() body, @Res() res: Response) {
+    console.log(body);
+
     const {
       // Required
       windowOpening,
