@@ -4,6 +4,10 @@ import { LogsController } from './logs.controller';
 import { LogsService } from './logs.service';
 import { Log, LogSchema } from './log.schema';
 import { ConfigModule } from '@nestjs/config';
+import { WeatherForecastService } from './weatherForecast.service';
+import { AirPollutionService } from './airPollution.service';
+import { HttpModule } from '@nestjs/axios';
+import { ProxyApiController } from './proxyApi.controller';
 
 @Module({
   imports: [
@@ -15,9 +19,10 @@ import { ConfigModule } from '@nestjs/config';
         }
       }
     }),
-    MongooseModule.forFeature([{ name: Log.name, schema: LogSchema }])
+    MongooseModule.forFeature([{ name: Log.name, schema: LogSchema }]),
+    HttpModule
   ],
-  controllers: [LogsController],
-  providers: [LogsService],
+  controllers: [LogsController, ProxyApiController],
+  providers: [LogsService, WeatherForecastService, AirPollutionService],
 })
 export class AppModule {}
