@@ -8,6 +8,7 @@ import { WeatherForecastService } from './weatherForecast.service';
 import { AirPollutionService } from './airPollution.service';
 import { HttpModule } from '@nestjs/axios';
 import { ProxyApiController } from './proxyApi.controller';
+import { CacheService } from './cacheService.service';
 
 @Module({
   imports: [
@@ -16,13 +17,18 @@ import { ProxyApiController } from './proxyApi.controller';
       useFactory: () => {
         return {
           uri: process.env.MONGO_URL,
-        }
-      }
+        };
+      },
     }),
     MongooseModule.forFeature([{ name: Log.name, schema: LogSchema }]),
-    HttpModule
+    HttpModule,
   ],
   controllers: [LogsController, ProxyApiController],
-  providers: [LogsService, WeatherForecastService, AirPollutionService],
+  providers: [
+    LogsService,
+    WeatherForecastService,
+    AirPollutionService,
+    CacheService,
+  ],
 })
 export class AppModule {}

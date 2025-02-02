@@ -11,28 +11,43 @@ import { Response, Request } from 'express';
 import { ApiGuard } from './api.guard';
 import { WeatherForecastService } from './weatherForecast.service';
 import { AirPollutionService } from './airPollution.service';
+import { CacheService } from './cacheService.service';
 
 @Controller()
 export class ProxyApiController {
-  constructor(private readonly weatherForecastService: WeatherForecastService, private readonly airPollutionService: AirPollutionService) {}
+  constructor(
+    private readonly weatherForecastService: WeatherForecastService,
+    private readonly airPollutionService: AirPollutionService,
+    private readonly cacheService: CacheService,
+  ) {}
 
   @Get('/weather-forecast')
   @UseGuards(new ApiGuard())
   async getWeatherForecast(@Res() res: Response) {
-    const data = await this.weatherForecastService.getData();
+    const cachedData = this.cacheService.getWeatherForecastResponse();
 
-    return res.json({
-      success: true,
-    });
+    if (cachedData) {
+      return res.json(cachedData);
+    }
+
+    const data = await this.weatherForecastService.getData();
+    this.cacheService.saveWeatherForecastResponse(data);
+
+    return res.json(data);
   }
 
   @Get('/air-pollution')
   @UseGuards(new ApiGuard())
   async getAirPollution(@Res() res: Response) {
-    const data = await this.airPollutionService.getData();
+    const cachedData = this.cacheService.getAirPollutionResponse();
 
-    return res.json({
-      success: true,
-    });
+    if (cachedData) {
+      return res.json(cachedData);
+    }
+
+    const data = await this.airPollutionService.getData();
+    this.cacheService.saveAirPollutionResponse(data);
+
+    return res.json(data);
   }
 }
