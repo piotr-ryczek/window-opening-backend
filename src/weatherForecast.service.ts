@@ -18,19 +18,25 @@ export class WeatherForecastService {
 
     const { list } = data;
 
-    const parsedList = list.map((item) => {
+    const parsedList = list.reduce((acc, item) => {
       const {
         main: { temp },
         wind: { speed },
         dt_txt,
       } = item;
 
-      return {
+      if (!temp || !speed || !dt_txt) {
+        return acc;
+      }
+
+      acc.push({
         temperature: temp,
         windSpeed: speed,
         date: dt_txt,
-      };
-    });
+      });
+
+      return acc;
+    }, []);
 
     return [
       parsedList[0],

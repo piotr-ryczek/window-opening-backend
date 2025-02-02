@@ -26,9 +26,24 @@ export class AirPollutionService {
     const { values: dataPM25Values } = dataPM25;
     const { values: dataPM10Values } = dataPM10;
 
+    const filteredDataPM25Values = dataPM25Values.filter(
+      ({ value }) => !!value,
+    );
+    const filteredDataPM10Values = dataPM10Values.filter(
+      ({ value }) => !!value,
+    );
+
     return {
-      pm25: [dataPM25Values[0], dataPM25Values[1], dataPM25Values[2]],
-      pm10: [dataPM10Values[0], dataPM10Values[1], dataPM10Values[2]],
+      pm25: [
+        filteredDataPM25Values[0],
+        filteredDataPM25Values[1],
+        filteredDataPM25Values[2],
+      ],
+      pm10: [
+        filteredDataPM10Values[0],
+        filteredDataPM10Values[1],
+        filteredDataPM10Values[2],
+      ],
     };
   }
 }
